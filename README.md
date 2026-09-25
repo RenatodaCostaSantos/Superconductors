@@ -24,3 +24,4 @@ git clone https://github.com/khamidieh/predict_tc reference/predict_tc
 - `scripts/01_build_features.py` – builds `data/processed/features.csv` from `unique_m.csv`.
 - `tests/test_features.py` – checks the port reproduces the author's `train.csv` (`uv run pytest`).
 - `data/reference/` – element tables exported from `tc.RData`.
+- `notebooks/01_feature_walkthrough.ipynb` – step-by-step explanation of the feature code.

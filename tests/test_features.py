@@ -62,6 +62,15 @@ def test_missing_property_is_dropped_without_renormalizing():
     assert x["number_of_elements"] == 2
 
 
+def test_rows_with_different_elements():
+    """Building counts from dicts leaves NaN for absent elements; they must count as 0."""
+    counts = pd.DataFrame([{"Re": 6, "Zr": 1}, {"Mg": 1, "B": 2}])
+    x = featurize(counts)
+    assert np.isfinite(x.to_numpy()).all()
+    single = featurize(pd.DataFrame([{"Mg": 1, "B": 2}]))
+    np.testing.assert_allclose(x.iloc[[1]].to_numpy(), single.to_numpy())
+
+
 def test_rows_aligned(unique_m, train):
     assert len(unique_m) == len(train) == 21263
     np.testing.assert_array_equal(unique_m["critical_temp"], train["critical_temp"])

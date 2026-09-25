@@ -74,13 +74,14 @@ def featurize(counts: pd.DataFrame) -> pd.DataFrame:
 
     counts: one row per material, columns are element symbols (any subset of
     ELEMENTS; missing columns are treated as zero), values are the formula
-    coefficients, e.g. the element columns of ``unique_m.csv``.
+    coefficients, e.g. the element columns of ``unique_m.csv``. NaN counts are
+    treated as zero (pandas fills absent keys with NaN when built from dicts).
     """
     unknown = set(counts.columns) - set(ELEMENTS)
     if unknown:
         raise ValueError(f"Unsupported elements (only Z <= 86): {sorted(unknown)}")
 
-    c = counts.reindex(columns=ELEMENTS, fill_value=0).to_numpy(dtype=float)
+    c = counts.reindex(columns=ELEMENTS).fillna(0).to_numpy(dtype=float)
     present = c > 0
     p = c / c.sum(axis=1, keepdims=True)
     table = load_element_table()
