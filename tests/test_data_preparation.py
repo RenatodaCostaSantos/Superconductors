@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from supercon.elements import ELEMENTS, PROPERTIES, load_element_table
+from supercon.elements import ELEMENTS, load_element_table, properties
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
@@ -40,7 +40,7 @@ def test_86_elements_up_to_radon(raw_elements, unique_m):
 
 
 def test_electron_affinity_shifted_by_1_5(raw_elements):
-    shift = load_element_table()["ElectronAffinity"] - raw_elements["ElectronAffinity"]
+    shift = load_element_table("mathematica")["ElectronAffinity"] - raw_elements["ElectronAffinity"]
     np.testing.assert_allclose(shift, 1.5)
 
 
@@ -48,7 +48,7 @@ def test_la_ce_radius_imputation(raw_elements):
     """The paper says covalent radii were used; the code and train.csv use 195/185 pm."""
     assert raw_elements.loc[["La", "Ce"], "AtomicRadius"].isna().all()
     assert raw_elements.loc[["La", "Ce"], "CovalentRadius"].tolist() == [207, 204]
-    assert load_element_table().loc[["La", "Ce"], "AtomicRadius"].tolist() == [195, 185]
+    assert load_element_table("mathematica").loc[["La", "Ce"], "AtomicRadius"].tolist() == [195, 185]
 
 
 def test_atomic_and_covalent_radius_correlated(raw_elements):
@@ -57,8 +57,8 @@ def test_atomic_and_covalent_radius_correlated(raw_elements):
 
 
 def test_other_properties_unchanged(raw_elements):
-    used = load_element_table()
-    for prop in PROPERTIES:
+    used = load_element_table("mathematica")
+    for prop in properties("mathematica"):
         if prop == "ElectronAffinity":
             continue
         a, b = used[prop], raw_elements[prop]

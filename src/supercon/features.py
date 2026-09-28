@@ -1,5 +1,9 @@
 """Python port of Hamidieh's (2018) 81 composition features.
 
+The element properties come from ``supercon.elements``; pass ``source="mathematica"`` to use the
+author's table (reproduces the paper's train.csv exactly) or ``source="pymatgen"`` (default) for the
+open-source table.
+
 Mirrors ``get_features`` / ``extract`` in ``main_script_production_9.R``,
 including its edge-case behaviour:
 
@@ -14,16 +18,19 @@ import numpy as np
 import pandas as pd
 from pymatgen.core import Composition
 
-from supercon.elements import ELEMENTS, PROPERTIES, load_element_table
+from supercon.elements import ELEMENTS, load_element_table, properties
 
 STATS = [
     "mean", "wtd_mean", "gmean", "wtd_gmean", "entropy",
     "wtd_entropy", "range", "wtd_range", "std", "wtd_std",
 ]
 
-FEATURE_NAMES = ["number_of_elements"] + [
-    f"{stat}_{suffix}" for suffix in PROPERTIES.values() for stat in STATS
-]
+
+def feature_names(source: str = "pymatgen") -> list[str]:
+    """The 81 feature names, in column order, for the given element source."""
+    return ["number_of_elements"] + [
+        f"{stat}_{suffix}" for suffix in properties(source).values() for stat in STATS
+    ]
 
 
 def _property_features(t: np.ndarray, p: np.ndarray, present: np.ndarray) -> np.ndarray:
@@ -69,13 +76,14 @@ def _property_features(t: np.ndarray, p: np.ndarray, present: np.ndarray) -> np.
     ])
 
 
-def featurize(counts: pd.DataFrame) -> pd.DataFrame:
+def featurize(counts: pd.DataFrame, source: str = "pymatgen") -> pd.DataFrame:
     """Compute the 81 features from a table of element counts.
 
     counts: one row per material, columns are element symbols (any subset of
     ELEMENTS; missing columns are treated as zero), values are the formula
     coefficients, e.g. the element columns of ``unique_m.csv``. NaN counts are
     treated as zero (pandas fills absent keys with NaN when built from dicts).
+    source: element property table, "pymatgen" or "mathematica" (see supercon.elements).
     """
     unknown = set(counts.columns) - set(ELEMENTS)
     if unknown:
@@ -84,14 +92,14 @@ def featurize(counts: pd.DataFrame) -> pd.DataFrame:
     c = counts.reindex(columns=ELEMENTS).fillna(0).to_numpy(dtype=float)
     present = c > 0
     p = c / c.sum(axis=1, keepdims=True)
-    table = load_element_table()
+    table = load_element_table(source)
 
     blocks = [present.sum(axis=1)[:, None]]
     with np.errstate(divide="ignore", invalid="ignore"):
-        for prop in PROPERTIES:
+        for prop in properties(source):
             blocks.append(_property_features(table[prop].to_numpy(dtype=float), p, present))
 
-    return pd.DataFrame(np.hstack(blocks), columns=FEATURE_NAMES, index=counts.index)
+    return pd.DataFrame(np.hstack(blocks), columns=feature_names(source), index=counts.index)
 
 
 def counts_from_formulas(formulas) -> pd.DataFrame:
