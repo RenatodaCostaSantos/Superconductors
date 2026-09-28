@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Downloaded / regenerable data
+data/raw/
+data/processed/
+
+# Clone of https://github.com/khamidieh/predict_tc (large, GPL-3.0; fetch separately)
+/reference/
