@@ -1,3 +1,3 @@
-from supercon.features import FEATURE_NAMES, composition_key, counts_from_formulas, featurize
+from supercon.features import composition_key, counts_from_formulas, feature_names, featurize
 
-__all__ = ["FEATURE_NAMES", "composition_key", "counts_from_formulas", "featurize"]
+__all__ = ["composition_key", "counts_from_formulas", "feature_names", "featurize"]
