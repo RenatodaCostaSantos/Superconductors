@@ -5,9 +5,10 @@ Two interchangeable sources, selected with ``source``:
 * ``"pymatgen"`` (default) — built from pymatgen's open element data. Same 8-property layout as
   the paper, except that **FusionHeat is replaced by MeltingPoint** (pymatgen has no heat of fusion)
   and **Valence** is the largest absolute common oxidation state (pymatgen has no "valence").
-* ``"mathematica"`` — the author's table: ``subset_element_data`` extracted from ``tc.RData`` in
+* ``"mathematica"`` — the author's table: ``subset_element_data`` from ``tc.RData`` in
   https://github.com/khamidieh/predict_tc, from Mathematica 11.1 ``ElementData`` (first ionization
-  energy from ptable.com). Use it to reproduce the paper's ``train.csv`` exactly.
+  energy from ptable.com). Use it to reproduce the paper's ``train.csv`` exactly. It is not shipped
+  with the package: ``scripts/fetch_mathematica_table.py`` extracts it into data/external/.
 
 Both tables use the paper's units and conventions: AtomicMass (amu), FirstIonizationEnergy (kJ/mol),
 AtomicRadius (pm), Density (kg/m^3, at standard temperature and pressure), ElectronAffinity
@@ -17,12 +18,17 @@ ThermalConductivity (W/(m K)), Valence (no units). Missing values are NaN.
 
 import warnings
 from functools import cache
-from importlib.resources import files
+from pathlib import Path
 
 import pandas as pd
 from pymatgen.core import Element
 
 SOURCES = ("pymatgen", "mathematica")
+
+# Where scripts/fetch_mathematica_table.py writes the author's tables (ignored by git).
+MATHEMATICA_DIR = Path(__file__).resolve().parents[2] / "data" / "external"
+MATHEMATICA_FILE = "mathematica_elements.csv"
+MATHEMATICA_FULL_FILE = "mathematica_element_data_full.csv"
 
 # Property -> suffix used in the feature names. Order defines the column order of the features.
 _MATHEMATICA_PROPERTIES = {
@@ -76,12 +82,28 @@ def _check(source):
         raise ValueError(f"source must be one of {SOURCES}, got {source!r}")
 
 
+def _mathematica_file(name: str) -> Path:
+    path = MATHEMATICA_DIR / name
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} not found. The Mathematica element table is optional and not distributed with the "
+            "code; run `uv run python scripts/fetch_mathematica_table.py` to extract it from the "
+            "author's tc.RData, or use source=\"pymatgen\"."
+        )
+    return path
+
+
 @cache
 def _mathematica_table() -> pd.DataFrame:
     """The author's table, with the La/Ce radius imputation and +1.5 EA shift already applied."""
-    path = files("supercon") / "data" / "hamidieh_elements.csv"
-    table = pd.read_csv(path).set_index("Element")
+    table = pd.read_csv(_mathematica_file(MATHEMATICA_FILE)).set_index("Element")
     return table.loc[ELEMENTS, list(_MATHEMATICA_PROPERTIES)].astype(float)
+
+
+def load_mathematica_full_table() -> pd.DataFrame:
+    """All 35 ElementData properties of the author's ``element_data``, before any adjustment."""
+    table = pd.read_csv(_mathematica_file(MATHEMATICA_FULL_FILE), index_col="name")
+    return table.set_index("Element").loc[ELEMENTS]
 
 
 def _get(e: Element, attribute: str):

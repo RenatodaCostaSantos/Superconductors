@@ -4,6 +4,8 @@ Section 2.2 (SuperCon clean-up) was done by the author before unique_m.csv was w
 these tests verify its outcome, they do not re-run it. Steps that leave no trace in the
 published files (dropping columns, sorting, fixing shifted Tc values, intermediate row
 counts) cannot be checked. See notebooks/02_data_preparation_checks.ipynb.
+
+Needs the author's element tables: uv run python scripts/fetch_mathematica_table.py
 """
 
 import re
@@ -13,7 +15,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from supercon.elements import ELEMENTS, load_element_table, properties
+from supercon.elements import ELEMENTS, load_element_table, load_mathematica_full_table, properties
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
@@ -27,8 +29,7 @@ def unique_m():
 @pytest.fixture(scope="module")
 def raw_elements():
     """Element table before the author's adjustments (element_data in tc.RData)."""
-    table = pd.read_csv(ROOT / "data" / "reference" / "element_data_full.csv", index_col=0)
-    return table.set_index("Element").loc[ELEMENTS]
+    return load_mathematica_full_table()
 
 
 # ---- 2.1 Element data -------------------------------------------------------------
