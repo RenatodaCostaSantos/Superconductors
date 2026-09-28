@@ -28,8 +28,12 @@ git clone https://github.com/khamidieh/predict_tc reference/predict_tc
 - `src/supercon/features.py` – port of the R `get_features` / `extract` functions (81 features).
 - `scripts/01_build_features.py` – builds `data/processed/features.csv` from `unique_m.csv`.
 - `tests/test_features.py` – checks the port reproduces the author's `train.csv` (`uv run pytest`).
+- `tests/test_data_preparation.py` – checks the published data reflects the preparation steps of
+  Section 2 of the paper.
 - `data/reference/` – element tables exported from `tc.RData`.
 - `notebooks/01_feature_walkthrough.ipynb` – step-by-step explanation of the feature code.
+- `notebooks/02_data_preparation_checks.ipynb` – step-by-step check of Section 2 of the paper, and
+  data issues the original clean-up did not catch.
 
 ## Credits and data sources
 
@@ -85,6 +89,11 @@ If you use this code, please cite the original paper and dataset:
 - The Python features match all 21,263 × 81 values of the author's `train.csv` to within ~1e-10.
 - The paper's worked example (Section 2.3, Table 2) is labelled "Re7Zr1", but its numbers
   correspond to Re6Zr1 (Tc = 6.7 K), the material actually in the dataset.
+- The paper says the La/Ce atomic radii were replaced by covalent radii (207/204 pm); the author's code
+  and `train.csv` actually use 195/185 pm (webelements.com).
+- A few formulas have misplaced decimal points the original clean-up missed (e.g. `Pr185Ce0.15Cu1O4`),
+  and the same composition can appear at different scales (`Si1V3` / `Si0.25V0.75`). The data is used
+  as published to reproduce the paper; see notebook 02.
 
 ## License
 
