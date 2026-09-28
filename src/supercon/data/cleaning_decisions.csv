@@ -1,0 +1,36 @@
+material,action,corrected,reason
+Pr185Ce0.15Cu1O4,fix,Pr1.85Ce0.15Cu1O4,misplaced decimal (same slip as Nd185Ce0.15Cu1O4 fixed in the paper); Pr1.85Ce0.15Cu1O4 with the same Tc is already in the data
+La1.85Sr0.15Cu98Ni0.02O4,fix,La1.85Sr0.15Cu0.98Ni0.02O4,misplaced decimal; La1.85Sr0.15Cu0.98Ni0.02O4 with the same Tc is already in the data
+Rb3C60C60,fix,Rb3C60,C60 written twice; C60Rb3 with the same Tc is already in the data
+Nd1.88Ce0.12Cu0.98IN0.02O4,fix,Nd1.88Ce0.12Cu0.98In0.02O4,indium typed as IN (parsed as iodine + nitrogen)
+Nd1.88Ce0.12Cu0.97IN0.03O4,fix,Nd1.88Ce0.12Cu0.97In0.03O4,indium typed as IN (parsed as iodine + nitrogen)
+Nd1.88Ce0.12Cu0.96IN0.04O4,fix,Nd1.88Ce0.12Cu0.96In0.04O4,indium typed as IN (parsed as iodine + nitrogen)
+Nd1.87Ce0.13Cu0.98IN0.02O4,fix,Nd1.87Ce0.13Cu0.98In0.02O4,indium typed as IN (parsed as iodine + nitrogen)
+Nd1.85Ce0.15Cu0.99IN0.01O4,fix,Nd1.85Ce0.15Cu0.99In0.01O4,indium typed as IN (parsed as iodine + nitrogen)
+Nd1.85Ce0.15Cu0.98IN0.02O4,fix,Nd1.85Ce0.15Cu0.98In0.02O4,indium typed as IN (parsed as iodine + nitrogen)
+Sm1Fe1As1F0.5O,fix,Sm1Fe1As1F0.5O0.5,oxygen coefficient dropped; sibling records are written FxO(1-x)
+Bi1Sr1Ca1Cu1O1,remove,,oxygen content unknown (O1 placeholder for a Bi-based cuprate)
+Gd0.51Pr1.34Ce0.15Cu1O1,remove,,oxygen content unknown (O1 placeholder for a T'-type cuprate)
+Hg1Ba2Ca3Cu4O1,remove,,oxygen content unknown (O1 placeholder for a Hg-based cuprate)
+Bi2Sr2Ca2Cu3O1,remove,,oxygen content unknown (O1 placeholder for a Bi-based cuprate)
+La0.85Sr0.15Fe1As1O,keep,,1111 iron pnictide: O1 is the correct stoichiometry
+Pr1Fe1As1O,keep,,1111 iron pnictide: O1 is the correct stoichiometry
+Sm1Fe1As1O,keep,,1111 iron pnictide: O1 is the correct stoichiometry
+Y0.95La0.05Fe1As1H0.15O,remove,,oxygen content unknown (H-doped 1111 records do not follow O = 1 - x)
+Ba0.7K0.75Bi1O,remove,,oxygen content unknown (Ba1-xKxBiO3 family)
+Y1Ba23O,remove,,garbled formula (likely Y1Ba2Cu3O) with unknown oxygen
+Bi2Sr2Ca2O,remove,,garbled formula (Bi cuprate written without Cu) with unknown oxygen
+Bi1.6Pb0.4Sr2Ca3.6O,remove,,garbled formula (Bi cuprate written without Cu) with unknown oxygen
+Y1Ba2Ca2.85Fe0.15S0.15O,remove,,garbled formula (Ca likely Cu) with unknown oxygen
+Y1Ba2Ca2.55Fe0.3S0.3O,remove,,garbled formula (Ca likely Cu) with unknown oxygen
+Y1Ba2Ca2.55Fe0.45S0.45O,remove,,garbled formula (Ca likely Cu) with unknown oxygen
+Sr1Nb2O,remove,,oxygen content unknown
+Sr0.9Nd0.1Nb2O,remove,,oxygen content unknown
+Ca1Nb2O,remove,,oxygen content unknown
+Fe1.08Te1O,remove,,oxygen content unknown (O-incorporated FeTe)
+Fe1.08Te0.55Se0.45O,remove,,oxygen content unknown (O-incorporated FeTe1-xSex)
+Ca4Sc2.01Ti0.99Fe2As2O,remove,,oxygen content unknown (perovskite-block iron arsenide)
+Ca5Sc2Ti2Fe2As2O,remove,,oxygen content unknown (perovskite-block iron arsenide)
+Ca6Sc2Ti3Fe2As2O,remove,,oxygen content unknown (perovskite-block iron arsenide)
+Ca4Mg0.75Ti1.25Fe2As2O,remove,,oxygen content unknown (perovskite-block iron arsenide)
+Na1O,remove,,implausible record (Na1O with Tc = 28 K)

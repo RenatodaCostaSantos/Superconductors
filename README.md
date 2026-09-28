@@ -26,14 +26,34 @@ git clone https://github.com/khamidieh/predict_tc reference/predict_tc
 - `src/supercon/elements.py` – the 86-element property table used by the paper
   (`subset_element_data`, extracted from the author's `tc.RData`).
 - `src/supercon/features.py` – port of the R `get_features` / `extract` functions (81 features).
-- `scripts/01_build_features.py` – builds `data/processed/features.csv` from `unique_m.csv`.
+- `src/supercon/cleaning.py` – extra cleaning beyond the paper; per-formula decisions in
+  `src/supercon/data/cleaning_decisions.csv`.
+- `scripts/01_build_features.py` – builds `data/processed/features.csv` from `unique_m.csv` (data as published).
+- `scripts/02_build_cleaned_features.py` – builds `data/processed/features_cleaned.csv` and
+  `cleaning_log.csv` after the extra cleaning.
 - `tests/test_features.py` – checks the port reproduces the author's `train.csv` (`uv run pytest`).
+- `tests/test_cleaning.py` – checks of the extra cleaning.
 - `tests/test_data_preparation.py` – checks the published data reflects the preparation steps of
   Section 2 of the paper.
 - `data/reference/` – element tables exported from `tc.RData`.
 - `notebooks/01_feature_walkthrough.ipynb` – step-by-step explanation of the feature code.
 - `notebooks/02_data_preparation_checks.ipynb` – step-by-step check of Section 2 of the paper, and
   data issues the original clean-up did not catch.
+- `notebooks/03_extra_cleaning.ipynb` – what the extra cleaning does and how it changes the data.
+
+## Two datasets
+
+| | `features.csv` | `features_cleaned.csv` |
+|---|---|---|
+| Source | `unique_m.csv` as published | `unique_m.csv` after `supercon.cleaning.clean` |
+| Rows | 21,263 | 19,264 |
+| Used for | reproducing the paper | comparison model |
+
+The extra cleaning fixes 13 formula typos, removes 1,926 records whose oxygen content is unknown
+(mostly cuprates written with a bare `O`, e.g. `Y1Ba2Cu3O`) and 73 duplicates that differ only in the
+scale of the formula. Both files have a `composition` column (scale-independent key) for grouped
+train/test splits. Because the cleaning removes many high-Tc cuprates, the two models should be
+compared on the same test compositions.
 
 ## Credits and data sources
 
