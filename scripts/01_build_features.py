@@ -1,13 +1,14 @@
 """Build the 81 Hamidieh features from the cleaned compositions in unique_m.csv.
 
-Output: data/processed/features.csv with the 81 features, critical_temp and material.
+Output: data/processed/features.csv with the 81 features, critical_temp, material and
+composition (scale-independent key used to group train/test splits).
 """
 
 from pathlib import Path
 
 import pandas as pd
 
-from supercon import featurize
+from supercon import composition_key, featurize
 from supercon.elements import ELEMENTS
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,7 @@ unique_m = pd.read_csv(ROOT / "data" / "raw" / "unique_m.csv")
 features = featurize(unique_m[ELEMENTS])
 features["critical_temp"] = unique_m["critical_temp"]
 features["material"] = unique_m["material"]
+features["composition"] = composition_key(unique_m[ELEMENTS])
 
 out = ROOT / "data" / "processed" / "features.csv"
 out.parent.mkdir(parents=True, exist_ok=True)

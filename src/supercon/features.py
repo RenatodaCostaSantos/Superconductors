@@ -98,3 +98,16 @@ def counts_from_formulas(formulas) -> pd.DataFrame:
     """Parse chemical formula strings into an element-count table (via pymatgen)."""
     rows = [Composition(f).get_el_amt_dict() for f in formulas]
     return pd.DataFrame(rows).fillna(0.0)
+
+
+def composition_key(counts: pd.DataFrame) -> pd.Series:
+    """Scale-independent label of each composition, e.g. "Si0.25V0.75" for both Si1V3 and Si0.25V0.75.
+
+    Elements are in atomic-number order with proportions rounded to 10 decimals. Materials
+    with the same key have identical features, so the key is the natural group for train/test splits.
+    """
+    c = counts.reindex(columns=ELEMENTS).fillna(0).to_numpy(dtype=float)
+    p = np.round(c / c.sum(axis=1, keepdims=True), 10)
+    symbols = np.array(ELEMENTS)
+    keys = ["".join(f"{e}{v:.10g}" for e, v in zip(symbols[row > 0], row[row > 0])) for row in p]
+    return pd.Series(keys, index=counts.index, name="composition")
