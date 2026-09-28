@@ -12,6 +12,17 @@ for quantum ML models.
 
 ## Setup
 
+The quickest route runs the whole data pipeline in one command:
+
+```bash
+uv sync
+uv run python scripts/run_pipeline.py        # add --no-mathematica to skip the author's element table
+uv run pytest
+```
+
+It performs the steps below: download the UCI data, extract the Mathematica element table, and build
+every feature file. To run them one by one:
+
 ```bash
 uv sync
 # UCI "Superconductivty Data" (train.csv, unique_m.csv)
@@ -49,6 +60,7 @@ It writes `data/processed/features_<dataset>_<elements>.csv` (81 features, `crit
   author's tables from `tc.RData`.
 - `src/supercon/cleaning.py` – extra cleaning beyond the paper; per-formula decisions in
   `src/supercon/data/cleaning_decisions.csv`.
+- `scripts/run_pipeline.py` – runs the whole data pipeline (download, extraction, all feature files).
 - `scripts/fetch_mathematica_table.py` – optional step: writes the author's Mathematica tables to
   `data/external/`.
 - `scripts/build_features.py` – builds the feature files (see above); the cleaned dataset also writes
